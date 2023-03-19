@@ -1,0 +1,81 @@
+import React, { useContext, useState } from 'react';
+import { StoreContext } from '../utils/Store';
+import styles from '../components/Navbar.module.css';
+import { useRouter } from 'next/router';
+import { loginWithEmail, signupWithEmail, connectToMetamask } from '../utils/user'
+import AuthLayout from '../components/layouts/AuthLayout';
+
+export default function signin() {
+  const { state, dispatch } = useContext(StoreContext);
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const login = async (e) => {
+    e.preventDefault();
+    if (email.length === 0 || password.length === 0) {
+      return notify('Please fill the login form', 'info');
+  }
+    router.push('/registermsme')
+  }
+
+  return (
+    <AuthLayout signIn={true}>
+      <div className='flex flex-col w-full'>
+        <div className={'text-2xl h-fit mt-8 ' + styles.arcadeFont}>LOG IN AS MSME</div>
+        <form className='max-w-md w-full mt-8 justify-self-start'>
+          <div className="w-full mb-3">
+            <label
+              className="flex items-center mb-2 text-lg font-thin"
+              htmlFor="grid-password"
+            >
+              <img src="icons/login-icon-mail.png" alt="" className='w-7 h-5 mr-2' />
+              <h1>Username</h1>
+            </label>
+            <input
+              type="email"
+              className="border-[1px] px-3 py-3 placeholder-gray-400 bg-transparent rounded text-sm font-thin shadow focus:outline-none focus:ring w-full"
+              placeholder="someone@example.com"
+              style={{ transition: "all .15s ease" }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="w-full mb-3">
+            <label
+              className="flex items-center mb-2 text-lg font-thin"
+              htmlFor="grid-password"
+            >
+              <img src="icons/login-icon-lock.png" alt="" className='w-7 h-5 mr-2' />
+              <h1>Password</h1>
+            </label>
+            <input
+              type="password"
+              className="border-[1px] px-3 py-3 placeholder-gray-400 bg-transparent rounded text-sm font-thin shadow focus:outline-none focus:ring w-full"
+              placeholder="password"
+              style={{ transition: "all .15s ease" }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+      
+          <button
+            className="w-full mt-6 text-white text-lg p-3 px-8 border-[1px] border-custom-blue bg-custom-blue/20 rounded-sm flex justify-between"
+            onClick={login}>
+            <h1>
+              Log In
+            </h1>
+            <h1>
+              -{">"}
+            </h1>
+          </button>
+        </form>
+        <div className='mt-4'>
+          <h1>Dont have a Vyapaar Account? <a className='text-custom-blue' href='/signup'>Register</a></h1>
+        </div>
+      </div>
+    </AuthLayout>
+  );
+}

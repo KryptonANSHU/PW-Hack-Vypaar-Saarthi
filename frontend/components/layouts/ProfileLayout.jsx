@@ -1,0 +1,83 @@
+import React from "react";
+import UserNavBar from "../UserNavbar";
+import { useContext } from "react";
+import { StoreContext } from "../../utils/Store";
+import { logoutHandler } from "../../utils/user";
+import { useRouter } from "next/router";
+
+export default function UserLayout({ children }) {
+  const { state, dispatch } = useContext(StoreContext);
+  console.log(data)
+  const router = useRouter();
+  const userInst = state.user;
+  console.log("user", userInst);
+  const sampleImg = 'https://www.alchinlong.com/wp-content/uploads/2015/09/sample-profile.png'
+  return (
+    <div className="w-screen text-white font-manrope">
+      <div className="flex justify-center bg-catalogue-background-1 p-4 pt-16 mt-0 bg-cover">
+        <div className="flex w-full justify-end items-center max-w-6xl pt-16">
+          <button
+            className="border-[1px] border-white px-6 py-2"
+            onClick={() => {
+              logoutHandler(dispatch, router);
+            }}
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto">
+        <img
+          className="h-[140px] relative -top-20 rounded-full"
+          src={state?.user?.profileImg || sampleImg} alt='User DP' />
+          <div className="-my-16 mb-10">
+            {state?.user?.wallet_address || state?.user?.email ? (
+              <div className="relative ">
+                <div className={`text-xl font-bold "`}>
+                  {state?.user?.wallet_address ? (
+                    <>
+                      Wallet: {state.user.wallet_address.slice(0, 5)}...
+                      {state.user.wallet_address.slice(-6)}
+                    </>
+                  ) : state?.user?.email ? (
+                    <span className=" text-xl font-bold ">
+                      {state.user.email}
+                    </span>
+                  ) : (
+                    <>User not found</>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
+      </div>
+
+      <div className="w-full flex justify-center mt-20">
+        <div className="max-w-6xl w-full flex">
+          <div className="max-w-sm w-fit">
+            <UserNavBar />
+          </div>
+          <div className="w-full">{children}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export async function getServerSideProps(context) {
+  const { name } = context.query;
+
+  let {data} = await axios.get(
+    `${process.env.API}/user/getUsername/${name}`
+  );
+
+  return {
+    props: {
+      data,
+    },
+  };
+}
